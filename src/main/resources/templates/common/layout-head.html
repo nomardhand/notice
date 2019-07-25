@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <head th:fragment="fragment_head">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width", initial-scale="1">
+        <title>공지 사항</title>
+
+        <!--기본 HTML 영역 : head 내용을 설정-->
+        <th:block layout:fragment="html_head"></th:block>
+
+        <!--메타 데이터 설정-->
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--의존성 라이브러리 설정-->
+        <!--<script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>-->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+        <!--<script type="text/javascript" src="/js/popper-1.14.3.min.js"></script>-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+        <!--integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"-->
+        <!--crossorigin="anonymous"></script>-->
+
+        <!--<script type="text/javascript" src="/js/bootstrap-4.1.3.min.js"></script>-->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+        <!--integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"-->
+        <!--crossorigin="anonymous"></script>-->
+
+        <!--<link rel="stylesheet" href="/css/bootstrap-4.1.3.min.css"/>-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+        <!--Font Awesome-->
+        <!--<link rel="stylesheet" href="/assets/fontawesome/css/all.css">-->
+        <!--<script defer src="/assets/fontawesome/js/all.js"></script>-->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+        <!--<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">-->
+
+        <style>
+            html,body {
+                font-family: Helvetica, Tahoma, sans-serif;
+                font-size: 100%;
+                background-color: #fafafa;
+                padding: 0;
+            }
+
+            tr {
+                line-height: 10px;
+                min-height: 10px;
+                height: 10px;
+            }
+
+            th, td {
+                border-bottom: 1px solid #ddd;
+            }
+
+            .my_item_horiz_center {
+                display: block;
+                margin: auto;
+                /*horiz-align: center;*/
+            }
+
+            .my_item_vertical_center {
+                vertical-align: middle;
+            }
+
+            .my_text_center {
+                text-align: center;
+            }
+
+            .my_input {
+                padding: 5px;
+                min-width: 250px;
+                min-height: 30px;
+                vertical-align: middle;
+            }
+
+            .my_textarea {
+                padding: 5px;
+                min-width:250px;
+                min-height:100px;
+            }
+
+            #area_top {
+                position: fixed;
+                height: 50px;
+                width: 100%;
+                z-index: 9999;
+                overflow-y: hidden;
+            }
+
+            #area_left {
+                position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+                height: 100%; /* Full-height: remove this if you want "auto" height */
+                width: 250px; /* Set the width of the sidebar */
+                top: 50px; /* Stay at the top */
+                left: 0;
+                z-index: 2; /* Stay on top */
+                font-size: 80%;
+                background-color: #212933;
+                overflow-x: hidden; /* Disable horizontal scroll */
+            }
+
+            #area_main {
+                margin-top: 50px;
+                margin-left: 250px; /* Same as the width of the sidebar */
+                z-index: 1;
+                font-size: 80%;
+                color: #575c61;
+            }
+
+            .my_card_dark{
+                color: #ffffff;
+                background-color: #212933;
+                border-radius: 0;
+            }
+
+            a.my_card_dark:link { color: white; text-decoration: none;}
+            a.my_card_dark:visited { color: white; text-decoration: none;}
+            a.my_card_dark:hover { color: white; text-decoration: none;}
+
+            .my_card_td {
+                border-bottom: 2px solid #343a40;
+            }
+
+            .my_fill_vertical{
+                height: 100%;
+                min-height: 100%;
+                height: auto !important;
+                margin: 0 0 -30px 0;
+            }
+
+            .my_table_list {
+                font-size: 90%;
+                color: #575c61;
+            }
+
+            .my_div_item {
+                height: 40px;
+            }
+
+            .ellipsis_text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .my_btn_black {
+                min-width: 80px;
+                height: 30px;
+                border-radius: 0;
+                font-size: 14px;
+                text-align: center;
+                padding: 2px 8px 2px 8px;
+                color: #ffffff;
+                background-color: #404040;
+            }
+
+            .my_btn_gray {
+                min-width: 80px;
+                height: 30px;
+                border-radius: 0;
+                font-size: 14px;
+                text-align: center;
+                padding: 2px 8px 2px 8px;
+                color: #ffffff;
+                background-color: #838383;
+            }
+
+            .my_btn_blue {
+                min-width: 80px;
+                height: 30px;
+                border-radius: 0;
+                font-size: 14px;
+                text-align: center;
+                padding: 2px 8px 2px 8px;
+                color: #ffffff;
+                background-color: #007BFF;
+            }
+
+            .my_corner_square {
+                border-radius: 0;
+            }
+
+            .nav-tabs{
+            }
+            .tab-content{
+                background-color: #fafafa;
+            }
+            /*.nav-tabs > li > a:hover{*/
+                /*color: rgb(255, 255, 255);*/
+                /*background-color: rgb(0, 112, 192);*/
+                /*border-color: rgb(0, 112, 192);*/
+            /*}*/
+
+            .nav-tabs > a,
+            .nav-tabs > a:focus,
+            .nav-tabs > a:hover {
+                color: rgb(113, 113, 113);
+                background-color: rgb(217, 217, 217);
+                border-color:rgb(217, 217, 217);
+            }
+
+            .nav-tabs > a:checked {
+                color: rgb(255, 255, 255);
+                background-color: rgb(0, 112, 192);
+                border-color: rgb(0, 112, 192);
+            }
+
+            .my_divider {
+                border-top: 1px solid #8c8b8b;
+                margin: 0 0 20px 0;
+            }
+
+            /*DatePicker 버튼 아이콘의 크기 설정*/
+            .ui-datepicker-trigger {
+                position:relative;
+                top: 0px;
+                right: 0px;
+                left: 3px;
+                height:30px;
+            }
+
+            /* 버튼 비활성화 설정 */
+            .my_disabled_function {
+                display: block;
+                /*display: none;*/
+            }
+        </style>
+
+        <script>
+
+            //모든 공백 체크 정규식
+            var EXP_EMP = /\s/g;
+            //아이디 정규식
+            var EXP_ID = /^[a-z0-9]{4,12}$/;
+            // 비밀번호 정규식
+            var EXP_PASSWD = /^[A-Za-z0-9]{4,12}$/;
+            // 이름 정규식
+            var EXP_NAME = /^[0-9a-zA-Z가-힣]{3,20}$/;
+            // 이메일 검사 정규식
+            var EXP_EMAIL = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+            // 휴대폰 번호 정규식
+            var EXP_PHONE = /^01([0|1|6|7|8|9]?)?([0-9]{3,4})?([0-9]{4})$/;
+
+            // jquery-ui datepicker 한글처리
+            $.datepicker.setDefaults({
+                dateFormat: 'yy-mm-dd',
+                prevText: '이전 달',
+                nextText: '다음 달',
+                monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+                monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+                dayNames: ['일','월','화','수','목','금','토'],
+                dayNamesShort: ['일','월','화','수','목','금','토'],
+                dayNamesMin: ['일','월','화','수','목','금','토'],
+                showMonthAfterYear: true,
+                changeMonth: true,
+                changeYear: true,
+                yearSuffix: '년',
+                showButtonPanel: false, // Today 버튼
+                showOn: "button",
+                //buttonImage: "/img/calendar_1.png",
+                //buttonImageOnly: true,
+                buttonText: '<i class="fa fa-calendar"></i>'
+            });
+
+            // 2 자릿수 맞추기
+            function fixZero(num) {
+                if(num < 10) {
+                    num = "0" + num;
+                }
+                return num;
+            }
+
+            // Date --> String 변환
+            function convertDateToString(date) {
+                if (date == null) {
+                    return "";
+                }
+
+                // Date 타입 변환 : java.util.Date -> jQuery Date
+                var tmpDate = new Date(date);
+                var year = tmpDate.getFullYear();
+                var month = tmpDate.getMonth() + 1;
+                var date = tmpDate.getDate();
+                var hour = tmpDate.getHours();
+                var minute = tmpDate.getMinutes();
+                var second = tmpDate.getSeconds();
+
+                var rc = year + '-' + fixZero(month) + '-' + fixZero(date) + ' '
+                        + fixZero(hour) + ':' + fixZero(minute) + ':' + fixZero(second);
+
+                return rc;
+            }
+
+            // Date --> String (YYYYMMDD) 변환
+            function convertDateToYYYYMMDD(date) {
+                if (date == null) {
+                    return null;
+                }
+
+                // Date 타입 변환 : java.util.Date -> jQuery Date
+                var tmpDate = new Date(date);
+                var year = tmpDate.getFullYear();
+                var month = tmpDate.getMonth() + 1;
+                var date = tmpDate.getDate();
+                var hour = tmpDate.getHours();
+                var minute = tmpDate.getMinutes();
+                var second = tmpDate.getSeconds();
+                var rc = year + '-' + fixZero(month) + '-' + fixZero(date);
+
+                return rc;
+            }
+        </script>
+
+    </head>
+</html>

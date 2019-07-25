@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head th:replace="common/layout-head :: fragment_head"> </head>
+
+<body th:fragment="fragment_body">
+    <div class="wrapper">
+        <!--Modal 창-->
+        <th:block th:include="notice/notice-popup"></th:block>l
+
+        <!--Body 설정-->
+        <div class="container-fluid pl-5 pr-5 pt-4 pb-5">
+            <!--기본 HTML 영역 : Body 또는 컨텐츠의 내용을 설정-->
+            <th:block layout:fragment="html-body"></th:block>
+        </div>
+
+        <!--푸터 설정-->
+    </div>
+    <!--CSS 가져오기-->
+</body>
+</html>

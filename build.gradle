@@ -1,0 +1,136 @@
+plugins {
+    id 'org.springframework.boot' version '2.1.6.RELEASE'
+    id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.im.demo'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Querydsl
+def queryDslOutput = file("src/main/generated")
+
+sourceSets {
+    main {
+        java {
+            srcDir "src/main/generated"
+        }
+    }
+}
+
+clean {
+    delete queryDslOutput
+}
+
+task generateQueryDSL(type: JavaCompile, group: "build") {
+    doFirst {
+        if (!queryDslOutput.exists()) {
+            logger.info("Creating `$queryDslOutput` directory")
+
+            if (!queryDslOutput.mkdirs()) {
+                throw new InvalidUserDataException("Unable to create `$queryDslOutput` directory")
+            }
+        }
+    }
+
+    source = sourceSets.main.java
+    classpath = configurations.compile
+    options.compilerArgs = [
+            "-proc:only",
+            "-processor",
+            "com.querydsl.apt.jpa.JPAAnnotationProcessor"
+    ]
+    destinationDir = queryDslOutput
+    options.failOnError = false
+}
+
+compileJava {
+    dependsOn generateQueryDSL //이 부분 dependsOn이 generateQueryDSL이다.
+    source generateQueryDSL.destinationDir
+}
+// Querydsl End
+
+def hibernate = [
+        "org.hibernate:hibernate-core",
+        "org.hibernate:hibernate-entitymanager",
+        "org.hibernate:hibernate-ehcache",
+        "org.hibernate:hibernate-spatial",
+        "org.hibernate:hibernate-validator:6.0.10.Final"
+]
+
+def thymeleaf = [
+        "org.springframework.boot:spring-boot-starter-thymeleaf",
+        "org.thymeleaf:thymeleaf:3.0.10.RELEASE",
+        "org.thymeleaf:thymeleaf-spring4:3.0.10.RELEASE",
+        "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect",
+//        "org.thymeleaf.extras:thymeleaf-extras-springsecurity4",
+        "org.thymeleaf.extras:thymeleaf-extras-java8time"
+]
+
+dependencies {
+
+    // AOP
+    compile('org.springframework.boot:spring-boot-starter-aop')
+    compile('org.aspectj:aspectjweaver')
+
+    // DB
+    compile hibernate
+    compile('com.zaxxer:HikariCP:2.7.9')
+    runtime('mysql:mysql-connector-java:5.1.47')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    //compile('org.apache.commons:commons-pool2')
+
+    // Querydsl
+    compile('com.querydsl:querydsl-core')
+    compile('com.querydsl:querydsl-apt')
+    compile('com.querydsl:querydsl-jpa')
+
+    // Json
+    compile('com.fasterxml.jackson.datatype:jackson-datatype-jdk8')
+    compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310')
+    compile('com.fasterxml.jackson.dataformat:jackson-dataformat-xml')
+
+    // Security
+    //compile('org.springframework.security:spring-security-core')
+    //compile('org.springframework.boot:spring-boot-starter-security')
+    //compile('org.springframework.security:spring-security-jwt:1.0.9.RELEASE')
+    //compile('org.springframework.security:spring-security-config:5.1.0.RELEASE')
+    //compile('org.springframework.security.oauth:spring-security-oauth2:2.3.3.RELEASE')
+    //compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure')
+
+    // Web
+    compile thymeleaf
+    compile('org.webjars:bootstrap:4.1.3')
+    compile('org.webjars.bower:jquery:3.3.1')
+    compile('org.springframework.boot:spring-boot-starter-web')
+
+    // Etc
+    compile('org.projectlombok:lombok')
+    compile('org.apache.commons:commons-lang3')
+    compile('org.apache.httpcomponents:httpclient')
+    runtime('org.springframework.boot:spring-boot-devtools')
+    runtime('org.springframework.boot:spring-boot-configuration-processor')
+
+    // JUnit
+    testCompile('junit:junit:4.12')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+
+

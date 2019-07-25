@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout-notice}">
+
+<head>
+</head>
+
+<body>
+<th:block layout:fragment="html-body" >
+
+    <div class="form-group">
+        <h4>공지사항 관리</h4>
+        <span>공지사항의 목록, 등록, 삭제 등의 작업을 수행합니다.</span>
+    </div>
+
+    <div class="form-group">
+        <div class="my_divider"> </div>
+    </div>
+
+    <div class="d-flex flex-column">
+
+        <div class="form-group row">
+            <div class="col-7 d-flex justify-content-start mr-auto">
+                <div class="input-group">
+                    <!-- 상하 공통 버튼 -->
+                    <div class="form-group row">
+                        <div class="col-3 mr-auto"> </div>
+                        <div class="col-3 d-flex justify-content-end">
+                            <a id="btn_notice_add" class="my_text_center my_disabled_function btn btn-square btn-primary my_corner_square mr-3 px-5"
+                               style="color: #ffffff; height: 35px;"
+                               data-toggle="modal" data-target="#m_notice_add">
+                                등록
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-5 d-flex justify-content-end">
+                <div class="d-flex flex-column mr-3">
+                    <span class="mb-1">검색 조건</span>
+                    <select id="sel_keytype" class="custom-select my_corner_square" style="width: 180px;">
+                        <th:block th:each="p_keytype : ${p_keytypes}">
+                            <option th:text="${p_keytype}" th:value="${p_keytype}" th:selected="${p_page_vo.keytype==p_keytype}"></option>
+                        </th:block>
+                    </select>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <span class="mb-1">검색어 (부분 검색)</span>
+                    <div class="row">
+                        <input id="input_keyword" name="input_keyword" type="text" maxlength="200"
+                               class="col-6 form-control my_corner_square mx-2"
+                               value="" style="width: 200px;">
+
+                        <div class="input-group-append">
+                            <a id="btn_keyword" type="button" class="btn btn-primary my_corner_square px-4" style="background-color: #404040;" href="#">
+                                검색
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div th:with="p_result=${p_page_maker?.result}" class="pt-1">
+        <table id="tb_my" class="my_table_list table " style="table-layout:fixed" th:inline="text">
+            <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th class="my_text_center" style="width: 8%;">번호</th>
+                <th class="my_text_center" style="width: 20%;">제목</th>
+                <th class="my_text_center">내용</th>
+                <th class="my_text_center" style="width: 12%">작성자</th>
+                <th class="my_text_center" style="width: 14%">등록일</th>
+                <th class="my_text_center" style="width: 14%">수정일</th>
+                <th class="my_text_center" style="width: 8%">수정</th>
+                <th class="my_text_center" style="width: 8%">삭제</th>
+            </tr>
+            </thead>
+            <tbody id="my_tbody">
+            <th:block th:each="p_notice : ${p_result?.content}">
+                <tr>
+                    <td id="id" class="my_text_center"> [[${p_notice.id}]]</td>
+                    <td id="title" class="my_text_center"> [[${p_notice.title}]]</td>
+                    <td id="content" class="my_text_center"> [[${p_notice.content}]] </td>
+                    <td id="writer" class="my_text_center"> [[${p_notice.writer}]] </td>
+                    <td id="regdate" class="my_text_center" th:text="${p_notice.regdate == null? '-' : #calendars.format(p_notice.regdate,'yyyy-MM-dd HH:mm')}"> </td>
+                    <td id="moddate" class="my_text_center" th:text="${p_notice.moddate == null? '-' : #calendars.format(p_notice.moddate,'yyyy-MM-dd HH:mm')}"> </td>
+                    <td style="margin: 0px; padding: 0px; vertical-align: middle;">
+                        <button class="btn_notice_modify my_item_horiz_center my_disabled_function"
+                                th:href=" ${p_notice.id}" th:text="수정"
+                                style="font-size: 10px; width: 60px; height: 25px; color: #ffffff; background-color: #404040;">
+                            <!--data-toggle="modal" data-target="#m_notice_release">-->
+                        </button>
+                    </td>
+                    <td style="margin: 0px; padding: 0px; vertical-align: middle;">
+                        <button class="btn_notice_delete my_item_horiz_center my_disabled_function"
+                                th:href=" ${p_notice.id}" th:text="삭제"
+                                style="font-size: 10px; width: 60px; height: 25px; color: #ffffff; background-color: #404040;">
+                            <!--data-toggle="modal" data-target="#m_notice_release">-->
+                        </button>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+        <th:block th:if="${p_result?.totalElements == null || p_result?.totalElements < 1}">
+            <span class="d-flex justify-content-center">검색 결과가 없습니다.</span>
+        </th:block>
+    </div>
+
+    <div class="container">
+        <ul class="pagination" role="pagination" style="padding-top:20px; padding-bottom:0px;">
+            <li class="page-item" th:if="${p_page_maker?.prevPage}">
+                <a class="page-link" th:href="${p_page_maker?.prevPage.pageNumber} + 1"> < </a>
+            </li>
+
+            <li class="page-item"
+                th:each="p_page : ${p_page_maker?.pageList}"
+                th:classappend="${p_page.pageNumber == p_page_maker?.currentPageNum - 1}? active : '' ">
+                <a class="page-link" th:href="${p_page.pageNumber} + 1">[[${p_page.pageNumber} + 1]]</a>
+            </li>
+
+            <li class="page-item" th:if="${p_page_maker?.nextPage}">
+                <a class="page-link" th:href="${p_page_maker?.nextPage.pageNumber} + 1"> > </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 상하 공통 버튼 -->
+    <!--<div class="form-group row">-->
+        <!--<div class="col-3 mr-auto"> </div>-->
+        <!--<div class="col-3 d-flex justify-content-end">-->
+            <!--<a id="btn_notice_add_2" class="my_disabled_function btn btn-square btn-primary my_corner_square mr-3 px-5" style="color: #ffffff;"-->
+               <!--data-toggle="modal" data-target="#m_notice_add">-->
+                <!--등록-->
+            <!--</a>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <form id="form_get" method="get" th:action="@{/notice/notice-list}">
+        <input type="hidden" name="page" th:value=${p_page_maker?.currentPageNum}>
+        <input type="hidden" name="size" th:value="${p_page_maker?.currentPage?.pageSize ?: '0'}">
+        <input type="hidden" name="id" th:value=${p_page_vo.id}>
+        <input type="hidden" name="title" th:value=${p_page_vo.title}>
+        <input type="hidden" name="content" th:value=${p_page_vo.content}>
+        <input type="hidden" name="writer" th:value=${p_page_vo.writer}>
+        <input type="hidden" name="regdate" th:value=${p_page_vo.regdate}>
+        <input type="hidden" name="moddate" th:value=${p_page_vo.moddate}>
+        <input type="hidden" name="period" th:value=${p_page_vo.period}>
+        <input type="hidden" name="extra" th:value=${p_page_vo.extra}>
+        <input type="hidden" name="keytype" th:value=${p_page_vo.keytype}>
+        <input type="hidden" name="keyword" th:value=${p_page_vo.keyword}>
+    </form>
+
+    <form id="form_post" method="post" th:action="@{/notice/notice-save}" >
+    </form>
+
+    <th:block layout:fragment="script">
+        <script th:inline="javascript">
+
+            // $(window).load(함수) 형식을 사용할 경우에 최신 jQuery 버전에서 에러 발생
+            $(window).on("load", function () {
+                //alert("Window Loaded : a");
+
+                var msg = [[${p_msg_type}]];
+                if (msg =='ok') {
+                    var modal = $('#m_msg_result');
+                    modal.find('#m_msg_result_content').html([[${p_msg_content}]])
+                    modal.modal('show');
+                } else if (msg =='error') {
+                    var modal = $('#m_msg_result');
+                    modal.find('#m_msg_result_content').html([[${p_msg_content}]])
+                    modal.modal('show');
+                }
+            });
+
+            $(document).ready(function() {
+                var formObj = $("#form_get");
+                var curPage = 1;
+                var selected_notice_id;
+
+                $(".pagination a").click(function(event) {
+                    event.preventDefault(); // 기존 페이지 정보를 사용한다.
+
+                    curPage = $(this).attr('href');
+                    formObj.find('[name="page"]').val(curPage);
+                    formObj.submit();
+                });
+
+                $("#btn_keyword").click(function(event){
+                    event.preventDefault();
+                    //console.log(typeStr, "" , keywordStr);
+
+                    var typeStr = $("#sel_keytype").find(":selected").val();
+                    var keywordStr = $("#input_keyword").val().trim();
+
+                    formObj.find("[name='keytype']").val(typeStr);
+                    formObj.find("[name='keyword']").val(keywordStr);
+                    formObj.find("[name='page']").val("1");
+                    formObj.submit();
+                });
+
+                // 등록
+                $("#btn_notice_add, #btn_notice_add_2").click(function(event){
+                    //alert("### Same function for two buttons");
+                    // 초기화
+                    selected_notice_id = 0;
+                });
+
+                $('#m_notice_add').on('show.bs.modal', function (event) {
+                    //alert("### show.bs.modal : 데이터 초기화");
+
+                    $("#input_notice_add_title").val("");
+                    $("#input_notice_add_content").val("");
+                    $("#input_notice_add_writer").val("");
+                });
+
+                $('#m_notice_add_yes').click(function (event) {
+                    event.preventDefault();
+
+                    var title = $("#input_notice_add_title").val().trim();
+                    var content = $("#input_notice_add_content").val().trim();
+                    var writer = $("#input_notice_add_writer").val().trim();
+
+                    if (selected_notice_id === null || selected_notice_id === undefined) {
+                        selected_notice_id = 0;
+                    }
+
+                    // POST 요청
+                    var formPost = $("#form_post");
+                    formPost.attr("action", [[@{'/notice/notice-save'}]]);
+                    formPost.attr("method", "post");
+                    formPost.append("<input type='hidden' name='id' value='" + selected_notice_id +"'>" );
+                    formPost.append("<input type='hidden' name='title' value='" + title +"'>" );
+                    formPost.append("<input type='hidden' name='content' value='" + content +"'>" );
+                    formPost.append("<input type='hidden' name='writer' value='" + writer +"'>" );
+                    formPost.submit();
+
+                    // 초기화
+                    selected_notice_id = 0;
+                });
+
+                // 수정 버튼 클릭
+                $(".btn_notice_modify").click(function(event){
+                    event.preventDefault();
+                    selected_notice_id = $(this).attr("href");
+
+                    // $(event.currentTarget).find('input[name="bookId"]').val(bookId);
+                    // var button = $(event.relatedTarget)
+                    // var recipient = button.data('whatever')
+                    // var modal = $(this)
+                    // modal.find('.modal-title').text('New message to 모달 예제 ' + recipient)
+                    // modal.find('#input').val(recipient)
+
+                    var modal = $('#m_notice_add');
+                    modal.find('#m_notice_add_title').html("공지사항 수정");
+                    modal.find('#m_notice_add_yes').html("수정");
+                    $("#m_notice_add").modal('show');
+                });
+
+                // 수정 확인
+                $('#m_notice_modify_yes').click(function (event) {
+                    event.preventDefault();
+
+                    var title = $("#input_notice_add_title").val().trim();
+                    var content = $("#input_notice_add_content").val().trim();
+                    var writer = $("#input_notice_add_writer").val().trim();
+
+                    // POST 요청
+                    var formPost = $("#form_post");
+                    formPost.attr("action", [[@{'/notice/notice-save'}]]);
+                    formPost.attr("method", "post");
+                    formPost.append("<input type='hidden' name='id' value='" + selected_notice_id +"'>" );
+                    formPost.append("<input type='hidden' name='title' value='" + title +"'>" );
+                    formPost.append("<input type='hidden' name='content' value='" + content +"'>" );
+                    formPost.append("<input type='hidden' name='writer' value='" + writer +"'>" );
+                    formPost.submit();
+
+                    // 초기화
+                    selected_notice_id = 0;
+                });
+
+                // 삭제 버튼 클릭
+                $(".btn_notice_delete").click(function(event){
+                    event.preventDefault();
+                    selected_notice_id = $(this).attr("href");
+
+                    // POST 요청
+                    var formPost = $("#form_post");
+                    formPost.attr("action", [[@{'/notice/notice-delete'}]]);
+                    formPost.attr("method", "post");
+                    formPost.append("<input type='hidden' name='id' value='" + selected_notice_id +"'>" );
+                    formPost.submit();
+
+                    // 초기화
+                    selected_notice_id = 0;
+                });
+
+            });
+        </script>
+    </th:block>
+</th:block>
+
+</body>
+</html>

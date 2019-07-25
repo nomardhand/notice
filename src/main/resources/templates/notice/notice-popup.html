@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--Datepicker : jQuery UI -->
+    <!--<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>-->
+    <!--<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"/>-->
+
+    <!--Datepicker : 커스텀 CDN-->
+    <!--참고) https://gijgo.com/download-->
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.11/combined/js/gijgo.min.js"></script>-->
+    <!--<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.11/combined/css/gijgo.min.css"/>-->
+
+    <!--Datepicker : 로컬파일-->
+    <!--<script type="text/javascript" src="/js/gijgo.js"></script>-->
+    <!--<link rel="stylesheet" type="text/css" href="/css/gijgo.css"/>-->
+</head>
+
+<body>
+
+<!-- Modal : 결과 메시지 창 -->
+<div id="m_msg_result" class="modal" tabindex="-1" role="dialog" aria-labelledby="tmpTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="min-width:500px;">
+            <div class="modal-body" style="padding-left:30px; padding-right:30px;">
+                <div style="margin-top: 40px; margin-bottom: 20px;">
+                    <h6 id="m_msg_result_content" style="text-align: center;"> 정상적으로 처리되었습니다. </h6>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button id="m_msg_result_close" type="button" class="btn btn-secondary my_corner_square"
+                        data-dismiss="modal" style="width:100px;">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal : 등록 / 변경 -->
+<div id="m_notice_add" class="modal" tabindex="-1" role="dialog" aria-labelledby="tmpTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="min-width:700px;">
+            <div class="modal-header">
+                <h5 id="m_notice_add_title" class="modal-title">공지사항 등록</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-left:30px; padding-right:30px; font-size: 80%;">
+
+                <div class="d-flex flex-column flex-fill">
+
+                    <table class="my_table_list table table-bordered" style="table-layout:auto; margin-top:15px;" th:inline="text">
+                        <thead>
+                        <tr style="display:none; background-color: #f2f2f2;">
+                            <th style="width: 30%; text-align: center;">항목</th>
+                            <th style="text-align: center;">내용</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody_notice_add">
+                            <tr>
+                                <td style="width:100px; vertical-align: middle; text-align: center;">
+                                    <span>제목</span>
+                                </td>
+                                <td>
+                                    <div class="form-inline">
+                                        <input id="input_notice_add_title" class="my_input d-flex flex-fill" type="text"
+                                               style="height: 37px;" placeholder="제목을 입력해주세요.">
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="width:100px; vertical-align: middle; text-align: center;">
+                                    <span>내용</span>
+                                </td>
+                                <td>
+                                    <div class="form-inline">
+                                    <input id="input_notice_add_content" class="my_input d-flex flex-fill" type="text"
+                                           style="height: 37px;" placeholder="내용을 입력해주세요.">
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="width:100px; vertical-align: middle; text-align: center;">
+                                    <span>작성자</span>
+                                </td>
+                                <td>
+                                    <div class="form-inline">
+                                    <input id="input_notice_add_writer" class="my_input d-flex flex-fill" type="text"
+                                           style="height: 37px;" placeholder="작성자를 입력해주세요.">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-center">
+                <button id="m_notice_add_no" type="button" class="my_corner_square btn btn-secondary"
+                        data-dismiss="modal" style="width:100px;">취소</button>
+                <button id="m_notice_add_yes" type="button" class="my_corner_square btn btn-primary"
+                        style="width:100px;">등록</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
